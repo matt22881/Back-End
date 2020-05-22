@@ -5,7 +5,7 @@ exports.up = async function(knex) {
       table.string("Username").notNull().unique()
       table.string("Password").notNull()
       table.string("Email").notNull().unique()
-      table.date("Joined").notNull()
+      table.date("Joined").defaultTo(knex.raw("current_timestamp"))
       table.string("Account").notNull()
   }))
 
@@ -50,15 +50,31 @@ exports.up = async function(knex) {
         .onDelete("CASCADE")
         .onUpdate("CASCADE")
     table.integer("Rating").defaultTo(0)
+    table.primary(["Users_id","Entries_id"])
   }))
 
+  await knex.schema.createTable("Entries_Categories", (table =>{
+    table.integer("Entries_id")
+        .references("id")
+        .inTable("Entries")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE")
+    table.integer("Categories_id")
+        .references("id")
+        .inTable("Categories")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE")
+    table.primary(["Entries_id","Categories_id"])
+  }))
+  
 
 }
 
 exports.down = async function(knex) {
-    await knex.schema.dropTableIfExists("Users")
-    await knex.schema.dropTableIfExists("Entries")
-    await knex.schema.dropTableIfExists("ContentBlocks")
-    await knex.schema.dropTableIfExists("Categories")
+    await knex.schema.dropTableIfExists("Entries_Categories")
     await knex.schema.dropTableIfExists("Ratings")
+    await knex.schema.dropTableIfExists("Categories")
+    await knex.schema.dropTableIfExists("ContentBlocks")
+    await knex.schema.dropTableIfExists("Entries")
+    await knex.schema.dropTableIfExists("Users")
 }
