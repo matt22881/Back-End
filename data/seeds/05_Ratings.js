@@ -7,7 +7,7 @@ exports.seed = async function(knex) {
     {Users_id: 2, Entries_id: 1, Rating: 5},
     {Users_id: 2, Entries_id: 2, Rating: 1},
     {Users_id: 3, Entries_id: 1, Rating: 3},
-    {Users_id: 3, Entries_id: 2, Rating: 5},
+    {Users_id: 3, Entries_id: 2, Rating: 4},
   ])
   
 };

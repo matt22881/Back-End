@@ -49,7 +49,7 @@ exports.up = async function(knex) {
         .inTable("Entries")
         .onDelete("CASCADE")
         .onUpdate("CASCADE")
-    table.integer("Rating").defaultTo(0)
+    table.integer("Rating")
     table.primary(["Users_id","Entries_id"])
   }))
 

@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const authRouter = require("./api/auth/auth-router")
+const entriesRouter = require("./api/entries/entries-router")
 
 const server = express()
 
@@ -9,6 +10,7 @@ server.use(cors())
 
 //routes
 server.use("/auth", authRouter)
+server.use("/api", entriesRouter)
 
 //default error
 server.use((err, req, res, next) => {
