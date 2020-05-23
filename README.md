@@ -18,10 +18,11 @@ Returns an object with Username and Account
         Account: -account-
     }
 
+API address https://how-to-api-2.herokuapp.com
 
 Login:
 
-POST -address-/auth/login
+POST /auth/login
 
 Takes in an object
     {
@@ -36,7 +37,7 @@ Returns and object with user id and a token
 
 Get all entries:
 
-GET -address-/api/entries
+GET /api/entries
 returns an array of entry objects with data fields:
 
 id, Author, Title, Created, Category, AverageRating 
@@ -44,14 +45,14 @@ id, Author, Title, Created, Category, AverageRating
 
 Get a single entry by id
 
-GET -address-/api/entries/:id
+GET /api/entries/:id
 returns an object with data fields:
 
 id, Author, Title, Created, Category, AverageRating 
 
 Get an entries content blocks
 
-Get -address-/api/entries/:id/content
+Get /api/entries/:id/content
 returns an array of objects for each content block with fields:
 
 Step,Heading,Content
