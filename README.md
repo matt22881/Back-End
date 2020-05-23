@@ -1,9 +1,11 @@
 # Back-End
 Back end server created using node js, express, and knex.
 
+API address https://how-to-api-2.herokuapp.com
+
 Register:
 
-POST -address-/auth/register
+POST /auth/register
 Takes in a User object
     {
         Username: -name-,
@@ -18,7 +20,6 @@ Returns an object with Username and Account
         Account: -account-
     }
 
-API address https://how-to-api-2.herokuapp.com
 
 Login:
 
@@ -32,6 +33,8 @@ Takes in an object
 Returns and object with user id and a token
     {
         id: -id-,
+        Username: -name-,
+        Account: -account-
         token: -token-
     }
 

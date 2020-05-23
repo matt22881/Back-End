@@ -27,8 +27,8 @@ router.post("/login", async (req, res, next) => {
         Error: "Login Credentails do not match"
     }
     try{
-        const { Username, Password } = req.body
-        const user = await db.findBy({ Username }).first()
+        const { Email, Password } = req.body
+        const user = await db.findBy({ Email }).first()
 
         if(!user){
             return res.status(401).json(authErr)
