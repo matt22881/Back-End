@@ -1,5 +1,6 @@
 const db = require("../data/config")
 const bc = require("bcryptjs")
+const knex = require("knex")
 
 //find users by filter
 function findBy(filter){
@@ -47,9 +48,16 @@ function getAllEntries(){
         .join("Users as u", "u.id", "e.Users_id" )
         .join("Categories as c", "c.id", "ec.Categories_id")
         .join("Ratings as r", "r.Entries_id", "e.id")
-        .select("e.id", "u.Username as Author", "e.Title", "e.Created", "c.Name as Category")
+        .select(
+            "e.id", 
+            "u.Username as Author", 
+            "u.id as Author_id", 
+            "e.Title", "e.Created", 
+            "c.Name as Category",
+            
+        )  
         .avg("r.Rating as AverageRating")
-        .groupBy("e.id", "u.Username", "c.Name")
+        .groupBy("e.id", "u.Username", "u.id", "c.Name")
 }
 
 //get entries by id
@@ -60,25 +68,74 @@ function getEntryById(id){
         .join("Categories as c", "c.id", "ec.Categories_id")
         .join("Ratings as r", "r.Entries_id", "e.id")
         .where("e.id", id)
-        .select("e.id", "u.Username as Author", "e.Title", "e.Created", "c.Name as Category")
+        .select("e.id", "u.Username as Author", "u.id as Author_id", "e.Title", "e.Created", "c.Name as Category")
         .avg("r.Rating as AverageRating")
-        .groupBy("e.id", "u.Username", "c.Name")
+        .groupBy("e.id", "u.Username", "u.id", "c.Name")
 }
 
 //get entries by author
+function getEntryByAuthor(id){
+    return db("Users as u")
+        .join("Entries as e", "e.Users_id", "u.id")
+        .join("Entries_Categories as ec", "e.id", "ec.Entries_id")
+        .join("Categories as c", "c.id", "ec.Categories_id")
+        .join("Ratings as r", "r.Entries_id", "e.id")
+        .where("u.id", id)
+        .select("e.id", "u.Username as Author", "u.id as Author_id", "e.Title", "e.Created", "c.Name as Category")
+        .avg("r.Rating as AverageRating")
+        .groupBy("e.id", "u.Username", "u.id", "c.Name")
+}
+
+//get entries raw
+function getRawEntries(){
+    return db("Entries")
+}
 
 //add an entry
+ function addEntry(entry){
+     return db("Entries").insert(entry).returning("id")
+}
 
 //edit an entry
+function editEntry(id, entry){
+    return db("Entries")
+    .where("id", id)
+    .update(entry)
+}
 
 //delete an entry
+function deleteEntry(id){
+    return db("Entries")
+    .where("id", id)
+    .del()
+}
+
+//add Entries-Category to link tables
+function addEntCat(entry){
+    return db("Entries_Categories").insert(entry)
+}
 
 //get content by entry id
 function getContentBlocks(id){
     return db("Entries as e")
         .join("ContentBlocks as cb", "e.id", "cb.Entries_id")
         .where("e.id", id)
-        .select("cb.Step", "cb.Heading", "cb.Content")
+        .select("cb.id as Content_id", "cb.Step", "cb.Heading", "cb.Content")
+}
+
+//Add a content block
+function addContent(content){
+    return db("ContentBlocks").insert(content)
+}
+
+//edit content block
+function editContent(id, edit){
+    return db("ContentBlocks").where("id", id).update(edit)
+}
+
+//delete content block
+function deleteContent(id){
+    return db("ContentBlocks").where("id", id).del()
 }
 
 //get users rating for a entry
@@ -94,13 +151,49 @@ function addRating(rating){
 }
 
 //edit a rating
+function editRating(uId, eId,rating){
+    return db("Ratings as r")
+    .where("r.Users_id", uId)
+    .andWhere("r.Entries_id", eId)
+    .update(rating)
+}
+
+//delete a rating
+function deleteRating(uId, eId){
+    return db("Ratings as r")
+        .where("r.Users_id", uId)
+        .andWhere("r.Entries_id", eId)
+        .del()
+    }
+
+// get all categories
+function categories(){
+    return db("Categories")
+}
+
+//get Category by name
+function getCategoryByName(name){
+    return db("Categories").where("Name", name).select("id")
+}
 
 //add a category
+function addCategory(category){
+    return db("Categories").insert(category)
+}
 
 //edit a category
+function editCategory(id, edit){
+    return db("Categories")
+        .where("id", id)
+        .update(edit)
+}
 
 //delete a category
-
+function deleteCategory(id){
+    return db("Categories")
+        .where("id", id)
+        .del()
+}
 
 
 
@@ -114,8 +207,23 @@ module.exports = {
     deleteUser,
     getAllEntries,
     getEntryById,
+    getEntryByAuthor,
+    getRawEntries,
+    addEntry,
+    editEntry,
+    deleteEntry,
+    addEntCat,
     getContentBlocks,
+    addContent,
+    editContent,
+    deleteContent,
     getUserRatingEntry,
     addRating,
-
+    editRating,
+    deleteRating,
+    categories,
+    getCategoryByName,
+    addCategory,
+    editCategory,
+    deleteCategory,
 }

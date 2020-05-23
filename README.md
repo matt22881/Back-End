@@ -27,7 +27,7 @@ POST /auth/login
 
 Takes in an object
     {
-        Username: -name-,
+        Email: -email-,
         Password: -password-
     }
 Returns and object with user id and a token
