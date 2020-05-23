@@ -6,7 +6,7 @@ const entriesRouter = require("./api/entries/entries-router")
 const server = express()
 
 server.use(express.json())
-server.use(cors())
+server.use(cors({origin: true, credentials: true }))
 
 server.get("/", (req,res) =>{
 	res.json({message: "Hello"})
