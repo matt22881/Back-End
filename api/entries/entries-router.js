@@ -30,4 +30,14 @@ router.get("/entries/:id/content", async (req, res, next) => {
     }
 })
 
+router.post("/entries/rating", async (req, res, next) => {
+    try{
+        const rating = req.body
+        await db.addRating(rating)
+        res.json({message: "rating submitted", Rating: req.body.Rating})
+    }catch(err){
+        next(err)
+    }
+})
+
 module.exports = router

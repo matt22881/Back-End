@@ -81,7 +81,17 @@ function getContentBlocks(id){
         .select("cb.Step", "cb.Heading", "cb.Content")
 }
 
+//get users rating for a entry
+function getUserRatingEntry(uId, eId){
+    return db("Ratings as r")
+        .where("r.Users_id", uId)
+        .andWhere("r.Entries_id", eId)
+}
+
 //add a rating
+function addRating(rating){
+    return db("Ratings").insert(rating)
+}
 
 //edit a rating
 
@@ -105,5 +115,7 @@ module.exports = {
     getAllEntries,
     getEntryById,
     getContentBlocks,
+    getUserRatingEntry,
+    addRating,
 
 }

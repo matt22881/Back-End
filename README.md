@@ -34,4 +34,26 @@ Returns and object with user id and a token
         token: -token-
     }
 
+Get all entries:
+
+GET -address-/api/entries
+returns an array of entry objects with data fields:
+
+id, Author, Title, Created, Category, AverageRating 
+
+
+Get a single entry by id
+
+GET -address-/api/entries/:id
+returns an object with data fields:
+
+id, Author, Title, Created, Category, AverageRating 
+
+Get an entries content blocks
+
+Get -address-/api/entries/:id/content
+returns an array of objects for each content block with fields:
+
+Step,Heading,Content
+
 

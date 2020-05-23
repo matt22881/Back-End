@@ -8,6 +8,10 @@ const server = express()
 server.use(express.json())
 server.use(cors())
 
+server.get("/", (req,res) =>{
+	res.json({message: "Hello"})
+})
+
 //routes
 server.use("/auth", authRouter)
 server.use("/api", entriesRouter)
