@@ -1,6 +1,6 @@
 const db = require("../data/config")
 const bc = require("bcryptjs")
-const knex = require("knex")
+
 
 //find users by filter
 function findBy(filter){
@@ -27,7 +27,7 @@ async function add(user){
 
 //get all users
 function getUsers(){
-    return db("Users")
+    return db("Users").select("id", "Username", "Email", "Joined", "Account")
 }
 
 //edit user by id
@@ -44,9 +44,8 @@ function deleteUser(id){
 //get all entries
 function getAllEntries(){
     return db("Entries as e")
-        .join("Entries_Categories as ec", "e.id", "ec.Entries_id" )
         .join("Users as u", "u.id", "e.Users_id" )
-        .join("Categories as c", "c.id", "ec.Categories_id")
+        .join("Categories as c", "c.id", "e.Category_id")
         .join("Ratings as r", "r.Entries_id", "e.id")
         .select(
             "e.id", 
@@ -58,32 +57,33 @@ function getAllEntries(){
         )  
         .avg("r.Rating as AverageRating")
         .groupBy("e.id", "u.Username", "u.id", "c.Name")
+        .orderBy("e.id")
 }
 
 //get entries by id
 function getEntryById(id){
     return db("Entries as e")
-        .join("Entries_Categories as ec", "e.id", "ec.Entries_id" )
         .join("Users as u", "u.id", "e.Users_id" )
-        .join("Categories as c", "c.id", "ec.Categories_id")
+        .join("Categories as c", "c.id", "e.Category_id")
         .join("Ratings as r", "r.Entries_id", "e.id")
         .where("e.id", id)
         .select("e.id", "u.Username as Author", "u.id as Author_id", "e.Title", "e.Created", "c.Name as Category")
         .avg("r.Rating as AverageRating")
         .groupBy("e.id", "u.Username", "u.id", "c.Name")
+
 }
 
 //get entries by author
 function getEntryByAuthor(id){
     return db("Users as u")
         .join("Entries as e", "e.Users_id", "u.id")
-        .join("Entries_Categories as ec", "e.id", "ec.Entries_id")
-        .join("Categories as c", "c.id", "ec.Categories_id")
+        .join("Categories as c", "c.id", "e.Category_id")
         .join("Ratings as r", "r.Entries_id", "e.id")
         .where("u.id", id)
         .select("e.id", "u.Username as Author", "u.id as Author_id", "e.Title", "e.Created", "c.Name as Category")
         .avg("r.Rating as AverageRating")
         .groupBy("e.id", "u.Username", "u.id", "c.Name")
+        .orderBy("e.id")
 }
 
 //get entries raw
@@ -114,6 +114,19 @@ function deleteEntry(id){
 function addEntCat(entry){
     return db("Entries_Categories").insert(entry)
 }
+
+function editEntCat(eId, entry){
+    return db("Entries_Categories")
+    .where("Entries_id", eId)
+    .update(entry)
+}
+
+function getEntCat(eId){
+    return db("Entries_Categories")
+    .where("Entries_id", eId)
+    
+}
+
 
 //get content by entry id
 function getContentBlocks(id){
@@ -213,6 +226,8 @@ module.exports = {
     editEntry,
     deleteEntry,
     addEntCat,
+    editEntCat,
+    getEntCat,
     getContentBlocks,
     addContent,
     editContent,

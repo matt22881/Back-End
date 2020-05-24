@@ -9,6 +9,11 @@ exports.up = async function(knex) {
       table.string("Account").notNull()
   }))
 
+  await knex.schema.createTable("Categories", (table =>{
+    table.increments("id")
+    table.string("Name").notNull()  
+  }))
+
   await knex.schema.createTable("Entries", (table =>{
     table.increments("id")
     table.integer("Users_id")
@@ -19,6 +24,8 @@ exports.up = async function(knex) {
     table.string("Title").notNull()
     table.date("Created").defaultTo(knex.raw("current_timestamp"))
     table.date("Edited").defaultTo(knex.raw("current_timestamp"))
+    table.integer("Category_id")
+
   }))
 
   await knex.schema.createTable("ContentBlocks", (table =>{
@@ -31,11 +38,6 @@ exports.up = async function(knex) {
     table.integer("Step").notNull()
     table.string("Heading").notNull()
     table.string("Content").notNull() 
-  }))
-
-  await knex.schema.createTable("Categories", (table =>{
-    table.increments("id")
-    table.string("Name").notNull()  
   }))
 
   await knex.schema.createTable("Ratings", (table =>{
@@ -53,28 +55,14 @@ exports.up = async function(knex) {
     table.primary(["Users_id","Entries_id"])
   }))
 
-  await knex.schema.createTable("Entries_Categories", (table =>{
-    table.integer("Entries_id")
-        .references("id")
-        .inTable("Entries")
-        .onDelete("CASCADE")
-        .onUpdate("CASCADE")
-    table.integer("Categories_id")
-        .references("id")
-        .inTable("Categories")
-        .onDelete("CASCADE")
-        .onUpdate("CASCADE")
-    table.primary(["Entries_id","Categories_id"])
-  }))
   
-
 }
 
 exports.down = async function(knex) {
-    await knex.schema.dropTableIfExists("Entries_Categories")
     await knex.schema.dropTableIfExists("Ratings")
-    await knex.schema.dropTableIfExists("Categories")
     await knex.schema.dropTableIfExists("ContentBlocks")
     await knex.schema.dropTableIfExists("Entries")
+    await knex.schema.dropTableIfExists("Categories")
     await knex.schema.dropTableIfExists("Users")
+    
 }

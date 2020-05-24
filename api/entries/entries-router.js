@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const db = require("../db-modal")
+const knex = require("knex")
 
 //get all entries
 router.get("/entries", async (req, res, next) => {
@@ -72,20 +73,15 @@ router.get("/entries/author/:id", async (req, res, next) => {
 //takes in {User_id: data, Title: data, Category: data}
 router.post("/entries", async (req, res, next) => {
     try{
+
+        const [category] = await db.getCategoryByName(req.body.Category)
         const entryToEnter = {
             Users_id: req.body.Users_id,
-            Title: req.body.Title
+            Title: req.body.Title,
+            Category_id: category.id
         }
         
         const [newEntry] = await db.addEntry(entryToEnter)
-        const [category] = await db.getCategoryByName(req.body.Category)
-
-        console.log(newEntry,category)
-
-        const categoryToEnter = {
-            Entries_id: newEntry,
-            Categories_id: category.id
-        }
 
         const initalRating = {
             Users_id: req.body.Users_id,
@@ -93,17 +89,32 @@ router.post("/entries", async (req, res, next) => {
             Rating: 0
         }
 
-        await db.addEntCat(categoryToEnter)
         await db.addRating(initalRating)
-        //const returningEntry = await db.getEntryById(newEntry)
+        const [returningEntry] = await db.getEntryById(newEntry)
 
-        res.json(category)
+        res.json(returningEntry)
     }catch(err){
         next(err)
     }
 })
 
 //edit an entry
+router.put("/entries/:id", async (req, res, next) => {
+    try{
+    
+        if(req.body.Category){
+            const [category] = await db.getCategoryByName(req.body.Category)
+            req.body.Category_id = category.id
+
+            delete req.body.Category
+        }
+    
+        await db.editEntry(req.params.id, req.body)
+        res.json({message: "Entry has been edited"})
+    }catch(err){
+        next(err)
+    }
+})
 
 //delete an entry
 
