@@ -1,6 +1,5 @@
 const router = require('express').Router()
 const db = require("../db-modal")
-const knex = require("knex")
 
 //get all entries
 router.get("/entries", async (req, res, next) => {
@@ -13,15 +12,6 @@ router.get("/entries", async (req, res, next) => {
     }
 })
 
-router.get("/entries/raw", async (req, res, next) => {
-    try{
-        const entries = await db.getRawEntries()
-
-        res.json(entries)
-    }catch(err){
-        next(err)
-    }
-})
 
 //get entry by id
 router.get("/entries/:id", async (req, res, next) => {
@@ -43,27 +33,27 @@ router.get("/entries/:id/content", async (req, res, next) => {
     }
 })
 
-
-//get entry and its content by entry id
-router.get("/entries/:id/full", async (req, res, next) => {
-    try{
-        const [entry] = await db.getEntryById(req.params.id)
-        const content = await db.getContentBlocks(req.params.id)
-        const fullEntry = {
-            ...entry,
-            ContentBlocks: [...content]
-        }
-        res.json(fullEntry)
-    }catch(err){
-        next(err)
-    }
-})
-
 //get all entries by an author 
 router.get("/entries/author/:id", async (req, res, next) => {
     try{
         const entry = await db.getEntryByAuthor(req.params.id)
         res.json(entry)
+    }catch(err){
+        next(err)
+    }
+})
+
+//get highest rated entries
+router.get("/topentries", async (req, res, next) => {
+    try{
+        let limit = 1
+        if(req.query.limit){
+            const entry = await db.getTopEntries(req.query.limit)
+            res.json(entry)    
+        }else{
+            const [entry] = await db.getTopEntries(limit)
+            res.json(entry)  
+        }        
     }catch(err){
         next(err)
     }
@@ -92,7 +82,7 @@ router.post("/entries", async (req, res, next) => {
         await db.addRating(initalRating)
         const [returningEntry] = await db.getEntryById(newEntry)
 
-        res.json(returningEntry)
+        res.status(201).json(returningEntry)
     }catch(err){
         next(err)
     }
@@ -108,23 +98,68 @@ router.put("/entries/:id", async (req, res, next) => {
 
             delete req.body.Category
         }
-    
+        req.body.Edited = new Date()
+        
         await db.editEntry(req.params.id, req.body)
-        res.json({message: "Entry has been edited"})
+        res.status(202).json({message: "Entry has been edited"})
     }catch(err){
         next(err)
     }
 })
 
 //delete an entry
+router.delete("/entries/:id", async (req, res, next) =>{
+    try{
+        await db.deleteEntry(req.params.id)
+        res.status(200).json({message: "Entry deleted."})
+    }catch(err){
+        next(err)
+    }
+})
 
-//add content to an entry
+//add content block to an entry
+router.post("/entries/content", async (req, res, next) =>{
+    try{
+        const [newBlockId] = await db.addContent(req.body)
+        const newBlock = await db.getContentById(newBlockId)
+        res.status(201).json(newBlock)
+    }catch(err){
+        next(err)
+    }
+})
 
 //edit a content block
+router.put("/entries/content/:id", async (req, res, next) =>{
+    try{
+        await db.editContent(req.params.id, req.body)
+       
+        res.status(202).json({message: "Content Block has been edited."})
+    }catch(err){
+        next(err)
+    }
+})
 
 //delete content block
+router.delete("/entries/content/:id", async (req, res, next) =>{
+    try{
+        await db.deleteContent(req.params.id)
+       
+        res.json({message: "Content Block has been deleted."})
+    }catch(err){
+        next(err)
+    }
+})
 
 //get a users rating for a entry
+router.get("/entries/:id/rating", async (req, res, next) =>{
+    const userId = req.query.user
+    try{
+        const rating = await db.getUserRatingEntry(userId, req.params.id)
+        res.json(rating)
+    }catch(err){
+        next(err)
+    }
+})
 
 //add a rating to entries
 //takes object {Users_id: data, Entries_id: data, Rating: rating}
@@ -132,14 +167,33 @@ router.post("/entries/rating", async (req, res, next) => {
     try{
         const rating = req.body
         await db.addRating(rating)
-        res.json({message: "rating submitted", Rating: req.body.Rating})
+        res.status(201).json({message: "rating submitted", Rating: req.body.Rating})
     }catch(err){
         next(err)
     }
 })
 
-//edit a rating for a specific entry
+//edit a users rating for a specific entry
+//Takes in an object  {Rating: data} w/ query string of user which = user id
+router.put("/entries/:id/rating", async (req, res, next) => {
+    const userId = req.query.user
+    try{
+        const rating = await db.editRating(userId, req.params.id, req.body)
+        res.status(202).json({message: "Entry has been edited"})
+    }catch(err){
+        next(err)
+    }
+})
 
 //delete a rating for a specific entry
+router.delete("/entries/:id/rating", async (req, res, next) => {
+    const userId = req.query.user
+    try{
+        await db.deleteRating(userId, req.params.id)
+        res.json({message: "Entry has been deleted"})
+    }catch(err){
+        next(err)
+    }
+})
 
 module.exports = router

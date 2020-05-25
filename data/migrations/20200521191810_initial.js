@@ -5,7 +5,7 @@ exports.up = async function(knex) {
       table.string("Username").notNull().unique()
       table.string("Password").notNull()
       table.string("Email").notNull().unique()
-      table.date("Joined").defaultTo(knex.raw("current_timestamp"))
+      table.datetime("Joined").defaultTo(knex.raw("current_timestamp"))
       table.string("Account").notNull()
   }))
 
@@ -22,8 +22,8 @@ exports.up = async function(knex) {
         .onDelete("CASCADE")
         .onUpdate("CASCADE")
     table.string("Title").notNull()
-    table.date("Created").defaultTo(knex.raw("current_timestamp"))
-    table.date("Edited").defaultTo(knex.raw("current_timestamp"))
+    table.datetime("Created").defaultTo(knex.raw("current_timestamp"))
+    table.datetime("Edited")//.defaultTo(knex.raw("current_timestamp"))
     table.integer("Category_id")
 
   }))
