@@ -33,6 +33,15 @@ router.get("/entries/:id/content", async (req, res, next) => {
     }
 })
 
+router.get("/entries/content/:id", async (req, res, next) => {
+    try{
+        const content = await db.getContentById(req.params.id)
+        res.json(content)
+    }catch(err){
+        next(err)
+    }
+})
+
 //get all entries by an author 
 router.get("/entries/author/:id", async (req, res, next) => {
     try{
@@ -59,7 +68,7 @@ router.get("/topentries", async (req, res, next) => {
     }
 })
 
-//add an entry
+//add an entry 
 //takes in {User_id: data, Title: data, Category: data}
 router.post("/entries", async (req, res, next) => {
     try{

@@ -2,7 +2,7 @@ const bc = require("bcryptjs")
 
 exports.seed = async function(knex) {
 
-  const hashedpass = bc.hashSync("password", 12)
+  const hashedpass = bc.hashSync("Password1!", 12)
   await knex("Users").del()
   await knex("Users").insert([
     {Username: "User1", Password: hashedpass, Email: "user1@email.com", Account:"Admin"},
