@@ -59,10 +59,11 @@ exports.up = async function(knex) {
 }
 
 exports.down = async function(knex) {
+
     await knex.schema.dropTableIfExists("Ratings")
     await knex.schema.dropTableIfExists("ContentBlocks")
-    await knex.schema.dropTableIfExists("Entries")
     await knex.schema.dropTableIfExists("Categories")
+    await knex.schema.dropTableIfExists("Entries")
     await knex.schema.dropTableIfExists("Users")
     
 }
