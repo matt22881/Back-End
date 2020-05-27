@@ -112,6 +112,26 @@ function getEntryByAuthor(id){
         .orderBy("e.id")
 }
 
+function getEntryByCategory(id){
+    return db("Users as u")
+        .join("Entries as e", "e.Users_id", "u.id")
+        .join("Categories as c", "c.id", "e.Category_id")
+        .join("Ratings as r", "r.Entries_id", "e.id")
+        .where("c.id", id)
+        .select(
+            "e.id", 
+            "u.Username as Author", 
+            "u.id as Author_id", 
+            "e.Title", "e.Created", 
+            "e.Edited", 
+            "c.Name as Category",
+            knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
+        )
+        .avg("r.Rating as AverageRating")
+        .groupBy("e.id", "u.Username", "u.id", "c.Name")
+        .orderBy("e.id")
+}
+
 function getTopEntries(limit){
     return db("Entries as e")
         .join("Users as u", "u.id", "e.Users_id" )
@@ -216,12 +236,17 @@ function categories(){
 
 //get Category by name
 function getCategoryByName(name){
-    return db("Categories").where("Name", name).select("id")
+    return db("Categories").where("Name", name)
+}
+
+//get category by id
+function getCategoryById(id){
+    return db("Categories").where("id", id)
 }
 
 //add a category
 function addCategory(category){
-    return db("Categories").insert(category)
+    return db("Categories").insert(category).returning("id")
 }
 
 //edit a category
@@ -229,6 +254,7 @@ function editCategory(id, edit){
     return db("Categories")
         .where("id", id)
         .update(edit)
+        .returning("id")
 }
 
 //delete a category
@@ -253,6 +279,7 @@ module.exports = {
     getEntryById,
     getEntryByAuthor,
     getTopEntries,
+    getEntryByCategory,
     addEntry,
     editEntry,
     deleteEntry,
@@ -267,6 +294,7 @@ module.exports = {
     deleteRating,
     categories,
     getCategoryByName,
+    getCategoryById,
     addCategory,
     editCategory,
     deleteCategory,

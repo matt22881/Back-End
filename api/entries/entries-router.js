@@ -52,6 +52,16 @@ router.get("/entries/author/:id", async (req, res, next) => {
     }
 })
 
+//get all entries by category id
+router.get("/entries/category/:id", async (req, res, next) => {
+    try{
+        const entry = await db.getEntryByCategory(req.params.id)
+        res.json(entry)
+    }catch(err){
+        next(err)
+    }
+})
+
 //get highest rated entries
 router.get("/topentries", async (req, res, next) => {
     try{

@@ -61,6 +61,8 @@ Will return a success message or error message
 
 **/api/entries/author/:id** —Returns all entries from a specific author/editor.
 
+**/api/entries/categories/:id** —Returns all entries from a specific category.
+
 **/api/topentries** —Returns the top rated entries 
 This endpoint takes an optional query string (?limit=number) at the end which limits the number of entries returned. Default is 1 entry. Ex. /api/topentries?limit=3 will return 3 entries.
 
@@ -76,12 +78,12 @@ Takes in an object:
 {User_id: data, Title: data, Category: data}
 Returns the created entry with all data fields including author, author id, date created, and initialized AverageRating of 0 ^
 
-**/entries/content** —Adds a content block to a post.
+**/api/entries/content** —Adds a content block to a post.
 Takes in an object:
 {Entries_id: entries id, Step: data, Heading: data, Content: data}
 Returns the same object with its own unique id.
 
-**/entries/rating** —Adds a rating for an entry
+**/api/entries/rating** —Adds a rating for an entry
 Takes in an object:
 {Users_id: data, Entries_id: data, Rating: data}
 Returns a success message and the rating entered. 
@@ -96,7 +98,7 @@ Returns a success or error message.
 Takes in an object of fields needed to be updated 
 Returns a success or error message.
 
-**/entries/:id/rating** —Edits the rating for a specific entry
+**/api/entries/:id/rating** —Edits the rating for a specific entry
 Takes a non-optional query string ?user=(user id) and :id in path it id of entry 
 Takes in an object {Rating: data}
 Returns a success or error message
@@ -108,8 +110,28 @@ Returns a success or error message
 
 **/api/entries/content/:id** —Deletes a content block by its id.
 
-**/entries/:id/rating** —Deletes a rating for an entry.
+**/api/entries/:id/rating** —Deletes a rating for an entry.
 Takes a non-optional query string ?user=(user id) and :id in path is id of entry.
+
+## Categories
+
+### GET
+
+**/api/categories** -Gets a list of all categories.
+
+**/api/categories/:id** -Gets a category by id.
+
+### POST
+
+**/api/categories** - Takes in an object {Name: data} and returns the object including id.
+
+### PUT
+
+**api/categories/:id** Edits a category takes in {Name: data} object and returns the object including id.
+
+### DELETE
+
+**api/categories/:id** Delets a category of a given id.
 
 ^When creating an entry it will not show in get routes without at least 1 rating. To subvert this bug each entry is initialized with a rating of 0. This rating is created by the author of the entry. So if a user is viewing his/her own entry and goes to rate their own entry it must update the rating and not try to make a new one.
 
