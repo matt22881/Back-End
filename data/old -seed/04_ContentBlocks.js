@@ -1,6 +1,6 @@
 
 exports.seed = async function(knex) {
-  await knex("ContentBlocks").del()
+  //await knex("ContentBlocks").del()
   await knex("ContentBlocks").insert([
     {Entries_id: 1, Step: 1, Heading: "Step 1", Content: "This is how you do it"},
     {Entries_id: 1, Step: 2, Heading: "Step 2", Content: "Next you do this"},

@@ -58,11 +58,12 @@ function getAllEntries(){
             "e.id", 
             "u.Username as Author", 
             "u.id as Author_id", 
-            "e.Title", 
+            "e.Title",
+            "e.Content", 
             "e.Created",
             "e.Edited", 
             "c.Name as Category",
-            knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
+            //knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
         )  
         .avg("r.Rating as AverageRating")
         .groupBy("e.id", "u.Username", "u.id", "c.Name")
@@ -81,10 +82,12 @@ function getEntryById(id){
             "e.id", 
             "u.Username as Author", 
             "u.id as Author_id", 
-            "e.Title", "e.Created",
+            "e.Title",
+            "e.Content", 
+            "e.Created",
             "e.Edited",
             "c.Name as Category",
-            knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
+            //knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
         )
         .avg("r.Rating as AverageRating")
         .groupBy("e.id", "u.Username", "u.id", "c.Name")
@@ -102,10 +105,12 @@ function getEntryByAuthor(id){
             "e.id", 
             "u.Username as Author", 
             "u.id as Author_id", 
-            "e.Title", "e.Created", 
+            "e.Title", 
+            "e.Content",
+            "e.Created", 
             "e.Edited", 
             "c.Name as Category",
-            knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
+            //knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
         )
         .avg("r.Rating as AverageRating")
         .groupBy("e.id", "u.Username", "u.id", "c.Name")
@@ -122,10 +127,12 @@ function getEntryByCategory(id){
             "e.id", 
             "u.Username as Author", 
             "u.id as Author_id", 
-            "e.Title", "e.Created", 
+            "e.Title", 
+            "e.Content",
+            "e.Created", 
             "e.Edited", 
             "c.Name as Category",
-            knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
+            //knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
         )
         .avg("r.Rating as AverageRating")
         .groupBy("e.id", "u.Username", "u.id", "c.Name")
@@ -141,11 +148,12 @@ function getTopEntries(limit){
             "e.id", 
             "u.Username as Author", 
             "u.id as Author_id", 
-            "e.Title", 
+            "e.Title",
+            "e.Content", 
             "e.Created",
             "e.Edited", 
             "c.Name as Category",
-            knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
+            //knex.raw('(SELECT jsonb_agg("ContentBlocks") as "Content" FROM "ContentBlocks" WHERE "Entries_id" = e.id )')
         )  
         .avg("r.Rating as AverageRating")
         .groupBy("e.id", "u.Username", "u.id", "c.Name")

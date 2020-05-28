@@ -4,7 +4,7 @@
   "description": "Back end server created using node js, express, and knex.",
   "main": "index.js",
   "scripts": {
-    "test:watch": "jest --watch ",
+    "test:watch": " jest --setupFiles dotenv/config --watch",
     "server": "nodemon -r dotenv/config index.js",
     "start": "node index.js"
   },
