@@ -83,6 +83,20 @@ router.get("/topentries", async (req, res, next) => {
 router.post("/entries", async (req, res, next) => {
     try{
 
+        if(!req.body.Users_id){
+            return res.status(404).json({error: "User id is missing"})
+        } 
+        if(!req.body.Title){
+            return res.status(404).json({error: "Title is missing"})
+        }
+        if(!req.body.Content){
+            return res.status(404).json({error: "Content is missing"})
+        }  
+        if(!req.body.Category){
+            return res.status(404).json({error: "Category is missing"})
+        } 
+        
+
         const [category] = await db.getCategoryByName(req.body.Category)
         const entryToEnter = {
             Users_id: req.body.Users_id,
