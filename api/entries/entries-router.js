@@ -87,6 +87,7 @@ router.post("/entries", async (req, res, next) => {
         const entryToEnter = {
             Users_id: req.body.Users_id,
             Title: req.body.Title,
+            Content: req.body.Content,
             Category_id: category.id
         }
         

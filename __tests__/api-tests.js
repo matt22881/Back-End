@@ -39,7 +39,7 @@ describe("Users intergration tests", ()=> {
 
 describe("entry intergration tests", ()=> {
     it("POST /entries", async () =>{
-        const data = {Users_id: 1, Title: "New how to", Category: "DIY"}
+        const data = {Users_id: 1, Title: "New how to", Content: "New Content", Category: "DIY"}
         const res = await supertest(server).post("/api/entries").send(data)
         expect(res.statusCode).toBe(201)
     })
