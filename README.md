@@ -1,4 +1,4 @@
-# How To 2 API
+# How To 42 API
 
 API address https://how-to-api-2.herokuapp.com
 
